@@ -1,5 +1,5 @@
 ## MTRAG: Multi-Target Referring and Grounding via Hybrid Semantic-Spatial Integration (Under Review)
- Official implementation of ``MTRAG: Multi-Target Referring and Grounding via Hybrid Semantic-Spatial Integration''.
+ Official implementation of "MTRAG: Multi-Target Referring and Grounding via Hybrid Semantic-Spatial Integration".
 
  As the paper is currently under peer review, we are releasing only the full-capability model MTRAG-Full (without additional fine-tuning) and the evaluation script for MTR-Bench at this stage. The complete codebase and model checkpoints will be made publicly available upon acceptance
 
