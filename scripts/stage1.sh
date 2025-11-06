@@ -1,0 +1,55 @@
+#!/bin/bash
+export MASTER_PORT=$(shuf -i 2000-65000 -n 1)
+export WANDB_DISABLED=true
+deepspeed  --master_port $MASTER_PORT mtrag/llava/train/train_mem.py \
+    --model_name_or_path vicuna-7b-v1.5 \
+    --version plain \
+    --initial_grounding True \
+    --train_mask_decoder False \
+    --vision_tower openai/clip-vit-large-patch14-336 \
+    --mm_projector_type SAMCLIP \
+    --tune_mm_mlp_adapter True \
+    --mm_vision_select_layer -2 \
+    --mm_use_im_start_end False \
+    --mm_use_im_patch_token False \
+    --bf16 True \
+    --output_dir ./path/to/save-stage1-weight\
+    --num_train_epochs 1 \
+    --per_device_train_batch_size 16 \
+    --per_device_eval_batch_size 0 \
+    --gradient_accumulation_steps 1 \
+    --evaluation_strategy "no" \
+    --save_strategy "steps" \
+    --save_steps 1000 \
+    --save_total_limit 1 \
+    --learning_rate 1e-3 \
+    --weight_decay 0. \
+    --warmup_ratio 0.03 \
+    --lr_scheduler_type "cosine" \
+    --logging_steps 1 \
+    --tf32 True \
+    --model_max_length 2048 \
+    --gradient_checkpointing True \
+    --dataloader_num_workers 8 \
+    --lazy_preprocess True \
+    --vision_pretrained ./checkpoints/sam_vit_h_4b8939.pth \
+    --out_dim 256 \
+    --ce_loss_weight 1.0 \
+    --dice_loss_weight 0.5 \
+    --bce_loss_weight 2.0 \
+    --vision_tower_alpha ./alpha-clip/clip_l14@336_grit_20m_4xe.pth \
+    --vision_module openai/clip-vit-large-patch14-336 \
+    --with_region True \
+    --add_region_feature True \
+    --dataset_dir ./data \
+    --num_classes_per_sample 3 \
+    --use_mm_start_end False \
+    --validation False \
+    --precision fp32 \
+    --global_image_encoder openai/clip-vit-large-patch14-336 \
+    --inference False \
+    --image_size 1024 \
+    --dataset_config Stage1 \
+    --grounding_hidden_size 256 \
+    --deepspeed ./scripts/zero2.json \
+    --report_to tensorboard \
