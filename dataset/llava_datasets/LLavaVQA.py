@@ -63,7 +63,7 @@ class LLaVAVQADataset(torch.utils.data.Dataset):
         return data_infos
 
     def __len__(self):
-        return len(self.data_infos)# FIXME:len(self.vqa_data)
+        return len(self.data_infos)
 
     def grounding_enc_processor(self, x: torch.Tensor) -> torch.Tensor:
         x = (x - self.IMG_MEAN) / self.IMG_STD

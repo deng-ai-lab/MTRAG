@@ -36,13 +36,11 @@ class LlavaMetaModel:
             self.vision_tower = build_vision_tower(config, delay_load=True)
             self.mm_projector = build_vision_projector(config)
         if hasattr(config, "region_fea_adapter"): 
-            # TODO: mlp2x_gelu
             modules = [nn.Linear(self.config.mm_hidden_size, self.config.hidden_size),
                            nn.GELU(),
                            nn.Linear(self.config.hidden_size, self.config.hidden_size)]
             self.region_fea_adapter = nn.Sequential(*modules)
-            # self.region_fea_adapter = nn.Linear(config.mm_hidden_size, config.hidden_size)
-
+            
     def get_vision_tower(self):
         vision_tower = getattr(self, "vision_tower", None)
         if type(vision_tower) is list:

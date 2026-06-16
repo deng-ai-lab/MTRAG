@@ -337,7 +337,7 @@ class RefCOCOgGCGDataset(GCGBaseDataset):
         annotations['tokens_positive'] = [tokens_positive[i] for i in sorted_indices]
         annotations['masks'] = [annotations['masks'][i] for i in sorted_indices]
         annotations['labels'] = [annotations['labels'][i] for i in sorted_indices]
-        tokens_positive = annotations['tokens_positive'] # FIXME: The source code lacks this order, which makes the constructor chaotic
+        tokens_positive = annotations['tokens_positive'] 
         # Trimming overlapping intervals
         for i in range(len(tokens_positive)):
             for j in range(i + 1, len(tokens_positive)):

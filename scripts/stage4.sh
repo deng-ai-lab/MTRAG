@@ -1,0 +1,47 @@
+#!/bin/bash
+export MASTER_PORT=$(shuf -i 2000-65000 -n 1)
+
+deepspeed --master_port $MASTER_PORT train_mix.py \
+    --version ./path/to/save-stage3-weight \
+    --initial_grounding \
+    --train_mask_decoder \
+    --mm_projector_type SAMCLIP \
+    --region_fea_adapter \
+    --mm_vision_select_layer -2 \
+    --image_aspect_ratio pad \
+    --bf16  \
+    --log_base_dir ./checkpoints \
+    --exp_name MTRAG-Full \
+    --epochs 11 \
+    --steps_per_epoch 1000 \
+    --batch_size 8 \
+    --grad_accumulation_steps 5 \
+    --val_batch_size 1 \
+    --lr 0.0003 \
+    --model_max_length 2048 \
+    --workers 4 \
+    --vision_pretrained ./checkpoints/sam_vit_h_4b8939.pth \
+    --out_dim 256 \
+    --ce_loss_weight 1.0 \
+    --dice_loss_weight 0.5 \
+    --bce_loss_weight 2.0 \
+    --vision_tower_alpha ./alpha-clip/clip_l14@336_grit_20m_4xe.pth \
+    --vision_module openai/clip-vit-large-patch14-336 \
+    --with_region \
+    --add_region_feature \
+    --dataset_dir ./data \
+    --num_classes_per_sample 3 \
+    --precision bf16 \
+    --image_size 1024 \
+    --dataset_seg "gReferExpSegm||MOSemanticSegm||MOReferExpSegm||Flickr30kGCG||RefCOCOgGCG||OpenPsgGCG||GranDfGCG||RIOTrainSegm||ReferExpSegm||SemanticSegm" \
+    --sample_rate_seg "1,1,1,1,1,1,10,1,1,1" \
+    --dataset_cap "COCOCap||LLaVA-VQA" \
+    --sample_rate_cap "1,1" \
+    --dataset_reg "Flickr30kReg||MTRAGMultiturn||MTRAGRelations||RIOMultiReg||OspreyMultiReg||VGReg||RefCocoGReg||RefCocoPReg||RefCocoReg||OspreyConversations||OspreyDetailedDescription||OspreyPartLevel||MDVPReg" \
+    --sample_rate_reg "1,1,1,1,1,1,1,1,1,1,1,1,1" \
+    --grounding_hidden_size 256 \
+    --pretrained \
+    --lora_r 16 \
+    --lora_alpha 32 \
+    --tune_mm_mlp_adapter \
+    --val_dataset "CocoCapVal|RefCOCOgRegVal|VisGenomeRegVal|RefCOCOgSegmVal|PsgGCGVal|RefCocoGCGVal|FlickrGCGVal" \
